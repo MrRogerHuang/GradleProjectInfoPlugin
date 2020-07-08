@@ -40,7 +40,7 @@ public class GradleProjectInfoPlugin implements Plugin<Project> {
 
             List<String> classpaths = new ArrayList<>();
             project.getConvention().getPlugin(JavaPluginConvention.class).getSourceSets().findByName(SourceSet.MAIN_SOURCE_SET_NAME)
-                    .getRuntimeClasspath().forEach(file -> classpaths.add(file.getName()));
+                    .getRuntimeClasspath().forEach(file -> classpaths.add(file.getAbsolutePath()));
 
 
             return new DefaultModel(pluginClassNames, classpaths);
