@@ -1,0 +1,23 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'com.gradle.plugin-publish' version '0.12.0'
+}
+
+pluginBundle {
+    website = 'https://github.com/MrRogerHuang'
+    vcsUrl = 'https://github.com/MrRogerHuang'
+    tags = ['project', 'info']
+}
+
+version = "0.1"
+
+gradlePlugin {
+    plugins {
+        GradleProjectInfoPlugin {
+            id = 'com.github.MrRogerHuang.GradleProjectInfo'
+            displayName = 'GradleProjectInfo'
+            description = 'A plugin for loading information of a Gradle project as a model.'
+            implementationClass = 'com.github.MrRogerHuang.GradleProjectInfoPlugin'
+        }
+    }
+}
