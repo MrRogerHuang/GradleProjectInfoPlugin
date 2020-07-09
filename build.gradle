@@ -30,12 +30,10 @@ pluginBundle {
     tags = ['project', 'info']
 }
 
-version = "0.2"
-
 gradlePlugin {
     plugins {
         GradleProjectInfoPlugin {
-            id = 'com.github.MrRogerHuang.GradleProjectInfoPlugin'
+            id = 'com.github.MrRogerHuang.GradleProjectInfo'
             displayName = 'GradleProjectInfo'
             description = 'A plugin for loading information of a Gradle project as a model.'
             implementationClass = 'com.github.MrRogerHuang.GradleProjectInfoPlugin'

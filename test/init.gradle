@@ -1,0 +1,13 @@
+buildscript {
+    dependencies {
+        classpath files("../build/libs/GradleProjectInfoPlugin-${version}.jar")
+    }
+}
+
+plugins {
+    id 'java'
+}
+
+allprojects {
+    apply plugin: com.github.MrRogerHuang.GradleProjectInfoPlugin
+}

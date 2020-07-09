@@ -5,9 +5,8 @@ import org.junit.Assert.assertTrue
 
 class Test {
     @Test fun testGradleProjectRunner() {
-        println("Hi!------------------------------")
         val gradleProjectRunner = GradleProjectRunner()
-        gradleProjectRunner.run(".")
+        gradleProjectRunner.run("./test", true)
         assertTrue(true)
     }
 }
