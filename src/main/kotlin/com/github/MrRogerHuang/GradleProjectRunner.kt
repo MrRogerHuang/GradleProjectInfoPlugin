@@ -1,12 +1,9 @@
 package com.github.MrRogerHuang
 
-import org.gradle.api.plugins.JavaPlugin
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.ProjectConnection
-import com.github.MrRogerHuang.GradleProjectInfo
 
 import java.io.File
-import org.junit.Assert.assertTrue
 
 fun copyResource(scriptName: String, target: File) {
     target.bufferedWriter().use { configWriter ->
@@ -17,6 +14,8 @@ fun copyResource(scriptName: String, target: File) {
 }
 
 class GradleProjectRunner {
+    var model: GradleProjectInfo? = null
+
     private fun gradleScriptToTempFile(scriptName: String, deleteOnExit: Boolean = false): File {
         val config = File.createTempFile(scriptName, ".gradle")
         if (deleteOnExit) {
@@ -35,7 +34,7 @@ class GradleProjectRunner {
         if (!testMode) {
             gradleScript = gradleScriptToTempFile("init.gradle")
             // Copy to the same temp path.
-            copyResource("gradle.properties", File(gradleScript.parent + "/gradle.properties"))
+            //copyResource("gradle.properties", File(gradleScript.parent + "/gradle.properties"))
         } else {
             gradleScript = File(projectDirectory + "/init.gradle")
         }
@@ -45,14 +44,10 @@ class GradleProjectRunner {
         try {
             connection = connector.connect()
             val customModelBuilder = connection.model(GradleProjectInfo::class.java)
-            customModelBuilder.addArguments("-b", gradleScript.absolutePath)
-            val model = customModelBuilder.get()
-            val classpaths = model.classpaths
-            println("Classpaths of project ${projectFile.canonicalPath}:")
-            classpaths?.forEach { println(it) }
+            customModelBuilder.addArguments("-I", gradleScript.absolutePath)
+            model = customModelBuilder.get()
         } catch (e: Exception) {
             e.printStackTrace()
-            assertTrue(false)
         }
         finally {
             connection?.close()

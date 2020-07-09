@@ -7,6 +7,8 @@ class Test {
     @Test fun testGradleProjectRunner() {
         val gradleProjectRunner = GradleProjectRunner()
         gradleProjectRunner.run("./test", true)
+        val model = gradleProjectRunner.model
+        model?.classpaths?.forEach { println(it) }
         assertTrue(true)
     }
 }
