@@ -1,0 +1,29 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id 'application'
+}
+
+mainClassName = 'com.github.MrRogerHuang.ExampleKt'
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://repo.gradle.org/gradle/libs-releases-local'
+    }
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation "gradle.plugin.com.github.MrRogerHuang.GradleProjectInfo:GradleProjectInfoPlugin:${version}"
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+}
+
+test {
+    testLogging {
+        events 'failed'
+        exceptionFormat 'short'
+    }
+}

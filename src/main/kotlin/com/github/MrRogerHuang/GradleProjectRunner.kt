@@ -1,55 +1,63 @@
 package com.github.MrRogerHuang
 
+import groovy.text.GStringTemplateEngine
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.ProjectConnection
 
 import java.io.File
+import java.io.Reader
+import java.util.*
 
-fun copyResource(scriptName: String, target: File) {
-    target.bufferedWriter().use { configWriter ->
-        ClassLoader.getSystemResourceAsStream(scriptName).bufferedReader().use { configReader ->
-            configReader.copyTo(configWriter)
-        }
-    }
+
+fun readResource(scriptName: String): Reader {
+    return ClassLoader.getSystemResourceAsStream(scriptName).bufferedReader()
 }
 
 class GradleProjectRunner {
     var model: GradleProjectInfo? = null
 
-    private fun gradleScriptToTempFile(scriptName: String, deleteOnExit: Boolean = false): File {
-        val config = File.createTempFile(scriptName, ".gradle")
+    private fun saveToTempFile(text: String, deleteOnExit: Boolean = false): File {
+        val config = File.createTempFile("temp_", ".gradle")
         if (deleteOnExit) {
             config.deleteOnExit()
         }
 
-        copyResource(scriptName, config)
+        config.bufferedWriter().use { writer ->
+            writer.write(text)
+        }
 
         return config
     }
 
     fun run(projectDirectory: String, testMode: Boolean = false) {
         val connector = GradleConnector.newConnector()
-        var gradleScript: File?
         val projectFile = File(projectDirectory)
-        if (!testMode) {
-            gradleScript = gradleScriptToTempFile("init.gradle")
-            // Copy to the same temp path.
-            //copyResource("gradle.properties", File(gradleScript.parent + "/gradle.properties"))
-        } else {
-            gradleScript = File(projectDirectory + "/init.gradle")
+        // Get plugin version.
+        var props = Properties()
+        val propsReader = readResource("gradle.properties")
+        props.load(propsReader)
+        val version = props.getProperty("version")
+        var bindMap = mapOf("version" to version)
+
+        if (testMode) {
+            bindMap = bindMap.plus("pluginRootDir" to projectFile.canonicalPath)
         }
+
+        // Replace ${version}.
+        val renderedInitGradleReader = readResource("init.gradle")
+        val renderedInitGradle = GStringTemplateEngine().createTemplate(renderedInitGradleReader).make(bindMap).toString()
+
+        var gradleScript = saveToTempFile(renderedInitGradle)
         connector.forProjectDirectory(projectFile.absoluteFile)
+
         var connection: ProjectConnection? = null
-        
+
         try {
             connection = connector.connect()
             val customModelBuilder = connection.model(GradleProjectInfo::class.java)
             customModelBuilder.addArguments("-I", gradleScript.absolutePath)
             model = customModelBuilder.get()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        finally {
+        } finally {
             connection?.close()
         }
     }

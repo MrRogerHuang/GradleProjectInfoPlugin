@@ -7,6 +7,7 @@ import org.gradle.api.tasks.SourceSet
 import org.gradle.tooling.provider.model.ToolingModelBuilder
 import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry
 import java.io.File
+import java.lang.IllegalStateException
 import java.util.*
 import java.util.function.Consumer
 import javax.inject.Inject
@@ -27,10 +28,14 @@ class GradleProjectInfoPlugin @Inject constructor(private val registry: ToolingM
                 pluginClassNames.add(plugin.javaClass.name)
             }
             val classpaths: MutableList<String> = ArrayList()
-            project.convention.getPlugin(JavaPluginConvention::class.java).sourceSets
-                    .findByName(SourceSet.MAIN_SOURCE_SET_NAME)?.runtimeClasspath?.forEach(Consumer {
-                        file: File -> classpaths.add(file.absolutePath)
-                    })
+            try {
+                project.convention.getPlugin(JavaPluginConvention::class.java).sourceSets
+                        .findByName(SourceSet.MAIN_SOURCE_SET_NAME)?.runtimeClasspath?.forEach(Consumer { file: File ->
+                            classpaths.add(file.absolutePath)
+                        })
+            } catch (e: IllegalStateException) {
+                // Ignore.
+            }
             return DefaultModel(pluginClassNames, classpaths)
         }
     }

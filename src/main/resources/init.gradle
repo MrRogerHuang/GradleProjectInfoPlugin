@@ -5,11 +5,10 @@ initscript {
         }
     }
     dependencies {
-        classpath "gradle.plugin.com.github.MrRogerHuang.GradleProjectInfo:GradleProjectInfoPlugin:0.7"
+        classpath "gradle.plugin.com.github.MrRogerHuang.GradleProjectInfo:GradleProjectInfoPlugin:${version}"
     }
 }
 
 allprojects {
-    apply plugin: 'java'
     apply plugin: com.github.MrRogerHuang.GradleProjectInfoPlugin
 }
