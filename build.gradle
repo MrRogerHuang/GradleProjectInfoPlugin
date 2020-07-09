@@ -10,12 +10,18 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.3.72"
 }
 
+test {
+    dependsOn jar
+    useJUnit()
+}
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    testImplementation 'junit:junit:4.12'
 }
 
 pluginBundle {
@@ -29,7 +35,7 @@ version = "0.2"
 gradlePlugin {
     plugins {
         GradleProjectInfoPlugin {
-            id = 'com.github.MrRogerHuang.GradleProjectInfo'
+            id = 'com.github.MrRogerHuang.GradleProjectInfoPlugin'
             displayName = 'GradleProjectInfo'
             description = 'A plugin for loading information of a Gradle project as a model.'
             implementationClass = 'com.github.MrRogerHuang.GradleProjectInfoPlugin'

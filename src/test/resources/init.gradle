@@ -1,0 +1,21 @@
+buildscript {
+    dependencies {
+        //classpath files('.\\build\\libs\\GradleProjectInfoPlugin-0.2.jar')
+        //classpath files("${project.rootDir}\\build\\libs\\GradleProjectInfoPlugin-0.2.jar")
+        classpath files('C:\\Data\\git\\GradleProjectInfoPlugin\\build\\libs\\GradleProjectInfoPlugin-0.2.jar')
+    }
+}
+
+plugins {
+    id 'java'
+}
+
+task hello {
+    doFirst {
+        println "hello"
+    }
+}
+
+allprojects {
+    apply plugin: com.github.MrRogerHuang.GradleProjectInfoPlugin
+}
