@@ -40,7 +40,7 @@ class GradleProjectRunner {
         var bindMap = mapOf("version" to version)
 
         if (testMode) {
-            bindMap = bindMap.plus("pluginRootDir" to projectFile.canonicalPath)
+            bindMap = bindMap.plus("pluginRootDir" to projectFile.canonicalPath.replace("\\", "/"))
         }
 
         // Replace ${version}.
